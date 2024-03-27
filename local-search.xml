@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  
+  
+  
+  <entry>
+    <title>gcc修炼-第1节</title>
+    <link href="/posts/ce9bc550/"/>
+    <url>/posts/ce9bc550/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>此文章是 gcc 学习笔记，<a href="https://www.bilibili.com/video/BV1Y8411M7fp/?p=3&spm_id_from=pageDriver&vd_source=d28f6fad4261fe5abca485f4a556dbc1">学习视频</a></p></blockquote><h2 id="1-多文件编译"><a href="#1-多文件编译" class="headerlink" title="1. 多文件编译"></a>1. 多文件编译</h2><p>目录结构如下：</p><p><img src="/posts/ce9bc550/fc81ec4f3b390a718d9f921c56e31774_MD5.jpeg"></p><p><code>main.c</code>（主程序）：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;hello.h&quot;</span></span><br><span class="hljs-type">int</span> <span class="hljs-title function_">main</span><span class="hljs-params">()</span><br>&#123;<br>        hello(<span class="hljs-string">&quot;呵呵，ojbk&quot;</span>);<br>        <span class="hljs-keyword">return</span> <span class="hljs-number">0</span>;<br>&#125;<br></code></pre></td></tr></table></figure><p><code>hello.h</code>（函数的声明）：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-type">void</span> <span class="hljs-title function_">hello</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* str)</span>;<br></code></pre></td></tr></table></figure><p><code>hello.c</code>（函数的实现）：</p><figure class="highlight c"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><code class="hljs c"><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&lt;stdio.h&gt;</span></span><br><span class="hljs-meta">#<span class="hljs-keyword">include</span> <span class="hljs-string">&quot;hello.h&quot;</span></span><br><span class="hljs-type">void</span> <span class="hljs-title function_">hello</span><span class="hljs-params">(<span class="hljs-type">const</span> <span class="hljs-type">char</span>* str)</span><br>&#123;<br>        <span class="hljs-built_in">printf</span>(<span class="hljs-string">&quot;%s\n&quot;</span>, str);<br>&#125;<br></code></pre></td></tr></table></figure><p>使用 <code>gcc -Wall main.c hello.c -o hehe</code> 命令进行多文件编译：</p><p><img src="/posts/ce9bc550/8af5eedd71c05782187f5b0b01ad29ca_MD5.jpeg"></p><h3 id="1-1-hello-h"><a href="#1-1-hello-h" class="headerlink" title="1.1 hello.h"></a>1.1 <code>hello.h</code></h3><p>在文件目录中有 <code>hello.c</code>、<code>hello.h</code> 和 <code>main.c</code>，但是在使用 <code>gcc</code> 编译时没有包含 <code>hello.h</code></p><p>在 <code>main.c</code> 中的第二行 include 了 <code>hello.h</code>，<code>gcc -Wall main.c hello.c -o hehe</code> 在执行这条命令时，gcc 读取到 <code>main.c</code> 源文件中的第二行，就会去找 <code>hello.h</code> 文件自动包含进来，所以不用包含头文件。</p><h4 id="1-1-1-和"><a href="#1-1-1-和" class="headerlink" title="1.1.1 &quot; &quot; 和 &lt; &gt;"></a>1.1.1 <code>&quot; &quot;</code> 和 <code>&lt; &gt;</code></h4><p>在 <code>main.c</code> 中使用了 <code>include &lt;stdio.h&gt;</code> 和 <code>include &quot;hello.h&quot;</code>，这两种不同的包含符号有什么区别？</p><p><code>&quot; &quot;</code> 表示编译器首先会到当前路径（被编译的源文件所在的路径）下搜索这个头文件，找不到再去<strong>系统头文件目录</strong>。</p><p>而 <code>&lt; &gt;</code> 是直接去<strong>系统头文件目录</strong>下搜索头文件。</p><blockquote><p>头文件目录（对于 Linux 系统）<br>&#x2F;usr&#x2F;include：系统上的标准头文件目录<br>&#x2F;usr&#x2F;local&#x2F;include: 本地安装的软件包可能会将头文件放置在这个目录中</p></blockquote><h3 id="1-2-另外"><a href="#1-2-另外" class="headerlink" title="1.2 另外"></a>1.2 另外</h3><p>在上述源文件中，<code>hello.c</code> 中的 <code>include &quot;hello.h&quot;</code> 可以删除，使用 <code>gcc -Wall main.c hello.c -o hehe</code> 编译时没有任何问题，为什么？</p><p>当 <code>main.c</code> 中包含了 <code>hello.h</code> 头文件时，这个头文件中的声明 <code>void hello(const char* str);</code> 告诉编译器有一个名为 <code>hello</code> 的函数，但是并没有提供该函数的具体实现。具体的实现在 <code>hello.c</code> 文件中。</p><p>编译器在编译 <code>main.c</code> 时，会查看 <code>#include &quot;hello.h&quot;</code>，这会将 <code>hello.h</code> 文件的内容插入到 <code>main.c</code> 中。然后编译器会在 <code>main.c</code> 中找到函数声明 <code>void hello(const char* str);</code>。由于这只是一个声明，编译器并不知道函数的具体实现。</p><p><strong>当你最后执行链接阶段（使用 <code>gcc main.c hello.c -o hello</code>）时，编译器会查找 <code>hello</code> 函数的实现。</strong> 这时，编译器看到了 <code>main.c</code> 中的调用 <code>hello(&quot;呵呵，ojbk&quot;);</code>，然后会在整个工程中搜索包含了 <code>hello</code> 函数实现的文件。<strong>由于你同时编译了 <code>hello.c</code>，所以编译器找到了 <code>hello</code> 函数的实现。</strong> —— <em>正是因为同时将 <code>main.c</code> 和 <code>hello.c</code> 放在一起编译（<code>gcc main.c hello.c -o hello</code>）所以才不报错。</em></p><p>最终，链接器将 <code>main.o</code> 和 <code>hello.o</code> 这两个目标文件合并，生成了可执行文件 <code>hello</code>。</p>]]></content>
+    
+    
+    <categories>
+      
+      <category>gcc修炼手册</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>GNU</tag>
+      
+      <tag>GCC</tag>
+      
+      <tag>C</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  <entry>
+    <title>frp内网穿透--使用记录</title>
+    <link href="/posts/75cc0c49/"/>
+    <url>/posts/75cc0c49/</url>
+    
+    <content type="html"><![CDATA[<blockquote><p>使用内网穿透进行远程 ssh 访问</p></blockquote><p>如果A、B电脑不在同一局域网的情况下，并且都没有公网IP，A、B之间要想访问就需要内网穿透了</p><p>一种方案是购买服务商提供的内网穿透工具，如 cpolar：</p><p><img src="/posts/75cc0c49/3c199aac7cbfd9da40b7b055fc837520_MD5.jpeg"></p><p>固定端口号套餐149&#x2F;年，不用折腾。</p><p>另一种方案是购买一个有公网 IP 的服务器做“桥梁”，但是最低配的轻量应用服务器价格都在一百左右，不是特别划算。最近年底腾讯云和阿里云活动，入门的轻量应用服务器价格60几块，果断入手~~~</p><p><img src="/posts/75cc0c49/114f2d6e1fe7bfce68d305524913e43c_MD5.jpeg"></p><h2 id="1-事先准备"><a href="#1-事先准备" class="headerlink" title="1. 事先准备"></a>1. 事先准备</h2><ul><li>具有公网 IP 的服务器(ubuntu) —— 👌</li><li>发起访问的电脑(windows) —— 👌</li><li>被访问的电脑(Ubuntu) —— 👌</li></ul><h2 id="2-下载-frp"><a href="#2-下载-frp" class="headerlink" title="2. 下载 frp"></a>2. 下载 frp</h2><p>frp GitHub 项目地址： <a href="https://github.com/fatedier/frp">https://github.com/fatedier/frp</a></p><p><img src="/posts/75cc0c49/833eaec4fe82ab68b6b75e32e30e49ea_MD5.jpeg"></p><p>分别针对 <code>具有公网IP的服务器</code> 和 <code>被访问的电脑</code> 下载相应的 frp 系统版本。我这里的两个主机都是 Ubuntu 系统，所以下载 <code>frp_0.53.2_linux_amd64.tar.gz</code> 到两个主机上，<em>注意：每个主机上都有一个相同版本的 <code>frp_0.53.2_linux_amd64.tar.gz</code>。</em></p><p>解压后，对于 <code>具有公网IP的服务器</code> 使用的是 frps (frp server)：</p><p><img src="/posts/75cc0c49/5ee686c92f4042c799cc21d7b58e6761_MD5.jpeg"></p><p>对于 <code>被访问的电脑</code> 使用的是 frpc (frp client)：</p><p><img src="/posts/75cc0c49/6ab1a7e48358d10033cd8c100bee4dbb_MD5.jpeg"></p><h2 id="3-修改-frp-配置文件"><a href="#3-修改-frp-配置文件" class="headerlink" title="3. 修改 frp 配置文件"></a>3. 修改 frp 配置文件</h2><h3 id="3-1-具有公网IP的服务器-的-frps-toml"><a href="#3-1-具有公网IP的服务器-的-frps-toml" class="headerlink" title="3.1 具有公网IP的服务器 的 frps.toml"></a>3.1 <code>具有公网IP的服务器</code> 的 <code>frps.toml</code></h3><p><img src="/posts/75cc0c49/afd713590a8abd299f012d8d7932c42d_MD5.jpeg"></p><p>默认的就行~</p><h3 id="3-2-被访问的电脑-的-frpc-toml"><a href="#3-2-被访问的电脑-的-frpc-toml" class="headerlink" title="3.2 被访问的电脑 的 frpc.toml"></a>3.2 <code>被访问的电脑</code> 的 <code>frpc.toml</code></h3><p><img src="/posts/75cc0c49/b53fa024875ecaa01d19bbf7c1ed6e0e_MD5.jpeg"></p><ul><li><code>serverAddr</code>：修改为 <code>具有公网IP的服务器</code> 的 IP</li><li><code>name</code>：随意填</li><li><code>type</code>：ssh 访问填 <strong>tcp</strong> </li><li><code>remotePort</code>：默认的 6000 就行</li></ul><p><img src="/posts/75cc0c49/cb48e711cc8de269bbc0f3592df21c0a_MD5.jpeg"></p><h2 id="4-设置开机自启"><a href="#4-设置开机自启" class="headerlink" title="4. 设置开机自启"></a>4. 设置开机自启</h2><p>使用 <code>frps -c frps.toml</code>、<code>frpc -c frpc.toml</code> 来运行 frp 服务。但是每次开机后都要在两台主机上分别运行 frp 服务，比较麻烦。使用 systemd 来实现 frp 服务的开机自启。</p><p>分别在 <code>具有公网IP的服务器</code> 和 <code>被访问的电脑</code> 的主机上使用 systemd 配置各自的 frp 开机自启服务。</p><h3 id="4-1-具有公网IP的服务器-的-frps-service"><a href="#4-1-具有公网IP的服务器-的-frps-service" class="headerlink" title="4.1 具有公网IP的服务器 的 frps.service"></a>4.1 <code>具有公网IP的服务器</code> 的 <code>frps.service</code></h3><p><code>sudo vim /etc/systemd/system/frps.service</code></p><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs txt">[Unit]<br>Description=frp server<br>After=network.target network-online.target syslog.target<br>Wants=network.target <br><br>[Service]<br>Type=simple<br>Restart=on-failure<br>RestartSec=5s<br>ExecStart=/你的路径/frps -c /你的路径/frps.toml<br><br>[Install]<br>WantedBy=multi-user.target<br></code></pre></td></tr></table></figure><blockquote><p>只需要针对你的路径修改 [Service] 下的 <code>ExecStart</code>，其余的不用修改</p></blockquote><p><img src="/posts/75cc0c49/fc984d1f1c751c24e90b6b1c29fb4b93_MD5.jpeg"></p><p>然后运行 <code>sudo systemctl daemon-reload</code> 和 <code>sudo systemctl enable --now frps.service</code> 以启用 frps 开机自启。</p><h3 id="4-2-被访问的电脑-的-frpc-service"><a href="#4-2-被访问的电脑-的-frpc-service" class="headerlink" title="4.2 被访问的电脑 的 frpc.service"></a>4.2 <code>被访问的电脑</code> 的 <code>frpc.service</code></h3><p><code>sudo vim /etc/systemd/system/frpc.service</code></p><figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><code class="hljs txt">[Unit]<br>Description=frp client <br>After=network.target network-online.target syslog.target<br>Wants=network.target <br><br>[Service]<br>Type=simple<br>Restart=on-failure<br>RestartSec=5s<br>ExecStart=/你的路径/frpc -c /你的路径/frpc.toml<br><br>[Install]<br>WantedBy=multi-user.target<br></code></pre></td></tr></table></figure><blockquote><p>只需要针对你的路径修改 [Service] 下的 <code>ExecStart</code></p></blockquote><p><img src="/posts/75cc0c49/35b5acb29b8ff252d159c3106436a010_MD5.jpeg"></p><p>然后运行 <code>sudo systemctl daemon-reload</code> 和 <code>sudo systemctl enable --now frpc.service</code> 以启用 frpc 开机自启。</p><h2 id="5-添加端口规则"><a href="#5-添加端口规则" class="headerlink" title="5. 添加端口规则"></a>5. 添加端口规则</h2><p>需要在 <code>具有公网IP的服务器</code> 的控制台防火墙里放行 6000、7000 端口：</p><p><img src="/posts/75cc0c49/38e6254556ea3130f974c07fc9701bbe_MD5.jpeg"></p><h2 id="6-登录使用"><a href="#6-登录使用" class="headerlink" title="6. 登录使用"></a>6. 登录使用</h2><p>在 <code>发起访问的电脑</code> 端远程 ssh 访问 <code>被访问的电脑</code> 端。</p><p>在 <code>发起访问的电脑</code> 端使用 ssh 工具登录 <code>具有公网IP的服务器</code> 。<strong>注意：登录地址是你购买的服务器的 IP，用户名是 <code>被访问的电脑</code> 端的用户名，密码是 <code>被访问的电脑</code> 端的密码，端口是 <code>6000</code> 。</strong></p><p>例如：</p><p><img src="/posts/75cc0c49/36ec4a0fd428863e0efeee2536b28cde_MD5.jpeg"></p>]]></content>
+    
+    
+    <categories>
+      
+      <category>DIY</category>
+      
+    </categories>
+    
+    
+    <tags>
+      
+      <tag>frp</tag>
+      
+      <tag>内网穿透</tag>
+      
+      <tag>ssh</tag>
+      
+      <tag>systemd</tag>
+      
+    </tags>
+    
+  </entry>
+  
+  
+  
+  
+</search>
