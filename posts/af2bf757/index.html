@@ -25,7 +25,7 @@
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://jwlee36963.github.io/img/index/clangd.png">
 <meta property="article:published_time" content="2024-05-24T09:01:21.000Z">
-<meta property="article:modified_time" content="2024-05-27T05:20:44.000Z">
+<meta property="article:modified_time" content="2024-06-07T03:47:29.000Z">
 <meta property="article:author" content="jw">
 <meta property="article:tag" content="clangd">
 <meta property="article:tag" content="lsp">
@@ -225,7 +225,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          563 字
+          568 字
         
       </span>
     
@@ -286,7 +286,7 @@
               <p id="updated-time" class="note note-info" style="">
                 
                   
-                    本文最后更新于 2024年5月27日 下午
+                    本文最后更新于 2024年6月7日 中午
                   
                 
               </p>
@@ -306,7 +306,7 @@
 <p>需要先将 VScode 中的所有 C&#x2F;C++ 插件禁用或卸载</p>
 </blockquote>
 <p>在 VScode 的插件里面搜索 “Clangd” 并且安装。</p>
-<p>打开 VScode 设置：</p>
+<p>安装完毕后，打开 VScode 设置：</p>
 <p><img src="/posts/af2bf757/911d5ef43a63ee4d32ac535e675f78c1_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
 <p>我是在远程中设置的，打开远程的 settings. json 文件，配置如下：</p>
 <figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;clangd.path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/usr/bin/clangd&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;clangd.arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>        <span class="hljs-string">&quot;--background-index&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--compile-commands-dir=/home/jw/develop/linux&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;-j=4&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--query-driver=/usr/bin/aarch64-linux-gnu-gcc&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--clang-tidy&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--clang-tidy-checks=performance-*,bugprone-*&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--all-scopes-completion&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--completion-style=detailed&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--header-insertion=iwyu&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--pch-storage=disk&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--compile-commands-dir=$&#123;workspaceFolder&#125;&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--background-index&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--completion-style=detailed&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--header-insertion=never&quot;</span><br>    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;clangd.fallbackFlags&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>        <span class="hljs-string">&quot;-I/home/jw/develop/linux/include&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;-I/home/jw/develop/linux/arch/arm64/include&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;-I/home/jw/develop/linux/arch/arm64/include/generated/&quot;</span><br>    <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
