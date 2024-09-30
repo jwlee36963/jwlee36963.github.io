@@ -1,0 +1,755 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon/apple.png">
+  <link rel="icon" href="/img/icon/chrome.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#515A5A">
+  <meta name="author" content="jw">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="使用场景：Windows 端 Vscode 使用 RemoteSSH 插件远程连接到 fedora 系统，并且项目源码是在 fedora 上。  1 安装 bearsudo dnf install bear  2 安装 clang、clangdsudo dnf install clang sudo dnf install clang-tools-extra  3 配置 VScode Clangd">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vscode、Clangd、RemoteSSH——环境配置">
+<meta property="og:url" content="https://jwlee36963.github.io/posts/af2bf757/index.html">
+<meta property="og:site_name" content="jw&#39;s blog">
+<meta property="og:description" content="使用场景：Windows 端 Vscode 使用 RemoteSSH 插件远程连接到 fedora 系统，并且项目源码是在 fedora 上。  1 安装 bearsudo dnf install bear  2 安装 clang、clangdsudo dnf install clang sudo dnf install clang-tools-extra  3 配置 VScode Clangd">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jwlee36963.github.io/img/index/clangd.png">
+<meta property="article:published_time" content="2024-05-24T09:01:21.000Z">
+<meta property="article:modified_time" content="2024-06-07T03:47:29.000Z">
+<meta property="article:author" content="jw">
+<meta property="article:tag" content="clangd">
+<meta property="article:tag" content="lsp">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jwlee36963.github.io/img/index/clangd.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>Vscode、Clangd、RemoteSSH——环境配置 - jw&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jwlee36963.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>jw&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/banner/vscode.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.4)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="Vscode、Clangd、RemoteSSH——环境配置"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-05-24 17:01" pubdate>
+          2024年5月24日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          568 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          5 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">Vscode、Clangd、RemoteSSH——环境配置</h1>
+            
+              <p id="updated-time" class="note note-info" style="">
+                
+                  
+                    本文最后更新于 2024年6月7日 中午
+                  
+                
+              </p>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>使用场景：Windows 端 Vscode 使用 RemoteSSH 插件远程连接到 fedora 系统，并且项目源码是在 fedora 上。</p>
+</blockquote>
+<h2 id="1-安装-bear"><a href="#1-安装-bear" class="headerlink" title="1 安装 bear"></a>1 安装 bear</h2><p><code>sudo dnf install bear</code></p>
+<p><img src="/posts/af2bf757/7c7eb2ee8ae3d4cb5f21a19fc1085371_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="2-安装-clang、clangd"><a href="#2-安装-clang、clangd" class="headerlink" title="2 安装 clang、clangd"></a>2 安装 clang、clangd</h2><p><code>sudo dnf install clang</code></p>
+<p><code>sudo dnf install clang-tools-extra</code></p>
+<p><img src="/posts/af2bf757/9b3d43fdbf79395f56ea1a63d0976da1_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="3-配置-VScode-Clangd-插件"><a href="#3-配置-VScode-Clangd-插件" class="headerlink" title="3 配置 VScode Clangd 插件"></a>3 配置 VScode Clangd 插件</h2><blockquote>
+<p>需要先将 VScode 中的所有 C&#x2F;C++ 插件禁用或卸载</p>
+</blockquote>
+<p>在 VScode 的插件里面搜索 “Clangd” 并且安装。</p>
+<p>安装完毕后，打开 VScode 设置：</p>
+<p><img src="/posts/af2bf757/911d5ef43a63ee4d32ac535e675f78c1_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>我是在远程中设置的，打开远程的 settings. json 文件，配置如下：</p>
+<figure class="highlight json"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><code class="hljs json"><span class="hljs-punctuation">&#123;</span><br>    <span class="hljs-attr">&quot;clangd.path&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-string">&quot;/usr/bin/clangd&quot;</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;clangd.arguments&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>        <span class="hljs-string">&quot;--background-index&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--compile-commands-dir=/home/jw/develop/linux&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;-j=4&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--query-driver=/usr/bin/aarch64-linux-gnu-gcc&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--clang-tidy&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--clang-tidy-checks=performance-*,bugprone-*&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--all-scopes-completion&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--completion-style=detailed&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--header-insertion=iwyu&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--pch-storage=disk&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--compile-commands-dir=$&#123;workspaceFolder&#125;&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--background-index&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--completion-style=detailed&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;--header-insertion=never&quot;</span><br>    <span class="hljs-punctuation">]</span><span class="hljs-punctuation">,</span><br>    <span class="hljs-attr">&quot;clangd.fallbackFlags&quot;</span><span class="hljs-punctuation">:</span> <span class="hljs-punctuation">[</span><br>        <span class="hljs-string">&quot;-I/home/jw/develop/linux/include&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;-I/home/jw/develop/linux/arch/arm64/include&quot;</span><span class="hljs-punctuation">,</span><br>        <span class="hljs-string">&quot;-I/home/jw/develop/linux/arch/arm64/include/generated/&quot;</span><br>    <span class="hljs-punctuation">]</span><br><span class="hljs-punctuation">&#125;</span><br></code></pre></td></tr></table></figure>
+
+<ul>
+<li>“clangd.path” 使用 <code>which clangd</code> 命令查看：<img src="/posts/af2bf757/878188bbfc108b4d84d3c3e79ceded27_MD5.jpeg" srcset="/img/loading.gif" lazyload></li>
+<li>“clangd.arguments” 的 –compile-commands-dir 填你的项目源码根目录</li>
+<li>“clangd.arguments” 的 –query-driver 填交叉编译器路径</li>
+<li>“clangd.fallbackFlags” 中 <code>/home/jw/develop/linux</code> 替换成你的项目路径</li>
+<li>“clangd.fallbackFlags” 中 <code>arch/arm64/include</code> 、<code>arch/arm64/include/generated/</code> 使用 arm64 架构，根据自己的开发板架构来</li>
+</ul>
+<h2 id="4-编译项目生成-compile-commands-json-文件"><a href="#4-编译项目生成-compile-commands-json-文件" class="headerlink" title="4 编译项目生成 compile_commands.json 文件"></a>4 编译项目生成 <code>compile_commands.json</code> 文件</h2><p>重新编译 kernel 镜像，先 clean 项目再编译：</p>
+<figure class="highlight shell"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><code class="hljs shell">make distclean<br>make bcm2712_defconfig    //根据你的开发板而定<br>bear -- make Image -j8    //Image、zImage还是uImage根据你的开发板而定<br></code></pre></td></tr></table></figure>
+
+<p>编译完后会在项目根目录下生成 <code>compile_commands.json</code> 文件：</p>
+<p><img src="/posts/af2bf757/e66215266218dbfc3e0ae4402749022f_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>将所有的 <code>/usr/bin/gcc</code> 替换成你的交叉编译器，我的是 <code>/usr/bin/aarch64-linux-gnu-gcc</code> VIM 中使用 <code>:%s#/usr/bin/gcc#/usr/bin/aarch64-linux-gnu-gcc#g</code> 命令替换。</p>
+<h3 id="4-1-创建-clangd-文件"><a href="#4-1-创建-clangd-文件" class="headerlink" title="4.1 创建 .clangd 文件"></a>4.1 创建 <code>.clangd</code> 文件</h3><p>在项目根目录下创建 <code>.clangd</code> 文件，内容如下：</p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><code class="hljs txt">CompileFlags:<br>    Add:<br>        [-I, &quot;/usr/include&quot;]<br>    Remove: <br>        [<br>            -fno-allow-store-data-races,<br>            -fconserve-stack,<br>            -mabi=lp64<br>        ]<br></code></pre></td></tr></table></figure>
+
+<p>其中的 Remove 是为了忽略 gcc 和 clang 编译器不兼容而出现的错误。</p>
+<h2 id="5-VScode-打开项目"><a href="#5-VScode-打开项目" class="headerlink" title="5 VScode 打开项目"></a>5 VScode 打开项目</h2><p>使用 VScode 打开项目：</p>
+<p><img src="/posts/af2bf757/77b2fe94fef24678a77591234969a3f5_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>ok，此时就可以代码提示和补全了！</p>
+<h3 id="5-1-处理一些问题"><a href="#5-1-处理一些问题" class="headerlink" title="5.1 处理一些问题"></a>5.1 处理一些问题</h3><p>如果配置后不起效，可以在 clangd 的 log 中查看哪里的问题：</p>
+<p><img src="/posts/af2bf757/f195d476a19cf7c2c9d44011984dc37f_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/posts/af2bf757/42df14c724748d944e53139e38785f60_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>具体的问题可以在网上搜索下。</p>
+<blockquote>
+<p>参考文章：<a target="_blank" rel="noopener" href="https://blog.csdn.net/Telly_/article/details/134289358">VSCode 使用 clangd 构建 Linux 驱动开发环境</a>、<a target="_blank" rel="noopener" href="https://blog.csdn.net/zhanzheng520/article/details/135103043">clangd: Couldn‘t build compiler instance</a></p>
+</blockquote>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/DIY/" class="category-chain-item">DIY</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/clangd/" class="print-no-link">#clangd</a>
+      
+        <a href="/tags/lsp/" class="print-no-link">#lsp</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>Vscode、Clangd、RemoteSSH——环境配置</div>
+      <div>https://jwlee36963.github.io/posts/af2bf757/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>jw</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年5月24日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                      <a href="/posts/bcdde5bf/" title="树莓派5-LED-Platform驱动">
+                        <i class="iconfont icon-arrowleft"></i>
+                        <span class="hidden-mobile">树莓派5-LED-Platform驱动</span>
+                        <span class="visible-mobile">上一篇</span>
+                      </a>
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/d7382070/" title="gcc学习笔记2">
+                        <span class="hidden-mobile">gcc学习笔记2</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'jwlee36963/commit-utterance');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>

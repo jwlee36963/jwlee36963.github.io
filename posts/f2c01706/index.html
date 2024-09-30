@@ -1,0 +1,807 @@
+
+
+<!DOCTYPE html>
+<html lang="zh-CN" data-default-color-scheme=auto>
+
+
+
+<head>
+  <meta charset="UTF-8">
+  <link rel="apple-touch-icon" sizes="76x76" href="/img/icon/apple.png">
+  <link rel="icon" href="/img/icon/chrome.png">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0, shrink-to-fit=no">
+  <meta http-equiv="x-ua-compatible" content="ie=edge">
+  
+  <meta name="theme-color" content="#515A5A">
+  <meta name="author" content="jw">
+  <meta name="keywords" content="">
+  
+    <meta name="description" content="简介：MCU 为 NXP-S32K344；RTD MCAL 版本为 SW32K3_RTD_R21-11_4.0.0_HF_02 ；S32DS 3.5；EB Tresos 29.0  1 安装 MCAL下载此版本的 RTD：S32K3_S32M27x Real-Time Drivers AUTOSAR R21-11 Version 4.0.0 HF02  下载并安装此版本的 MCAL：  这里，我">
+<meta property="og:type" content="article">
+<meta property="og:title" content="S32DS集成MCAL">
+<meta property="og:url" content="https://jwlee36963.github.io/posts/f2c01706/index.html">
+<meta property="og:site_name" content="jw&#39;s blog">
+<meta property="og:description" content="简介：MCU 为 NXP-S32K344；RTD MCAL 版本为 SW32K3_RTD_R21-11_4.0.0_HF_02 ；S32DS 3.5；EB Tresos 29.0  1 安装 MCAL下载此版本的 RTD：S32K3_S32M27x Real-Time Drivers AUTOSAR R21-11 Version 4.0.0 HF02  下载并安装此版本的 MCAL：  这里，我">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://jwlee36963.github.io/img/index/nxp.png">
+<meta property="article:published_time" content="2024-09-30T07:27:51.000Z">
+<meta property="article:modified_time" content="2024-09-30T07:27:51.000Z">
+<meta property="article:author" content="jw">
+<meta property="article:tag" content="S32DS">
+<meta property="article:tag" content="EB_Tresos">
+<meta property="article:tag" content="MCAL">
+<meta property="article:tag" content="Autosar">
+<meta property="article:tag" content="S32K344">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://jwlee36963.github.io/img/index/nxp.png">
+  
+  
+    <meta name="referrer" content="no-referrer-when-downgrade">
+  
+  
+  <title>S32DS集成MCAL - jw&#39;s blog</title>
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
+
+
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/github-markdown-css/4.0.0/github-markdown.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/hint.css/2.7.0/hint.min.css" />
+
+  <link  rel="stylesheet" href="https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.css" />
+
+
+
+<!-- 主题依赖的图标库，不要自行修改 -->
+<!-- Do not modify the link that theme dependent icons -->
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1749284_hj8rtnfg7um.css">
+
+
+
+<link rel="stylesheet" href="//at.alicdn.com/t/font_1736178_lbnruvf0jn.css">
+
+
+<link  rel="stylesheet" href="/css/main.css" />
+
+
+  <link id="highlight-css" rel="stylesheet" href="/css/highlight.css" />
+  
+    <link id="highlight-css-dark" rel="stylesheet" href="/css/highlight-dark.css" />
+  
+
+
+
+
+  <script id="fluid-configs">
+    var Fluid = window.Fluid || {};
+    Fluid.ctx = Object.assign({}, Fluid.ctx)
+    var CONFIG = {"hostname":"jwlee36963.github.io","root":"/","version":"1.9.7","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":{"measurement_id":null},"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml","include_content_in_search":true};
+
+    if (CONFIG.web_analytics.follow_dnt) {
+      var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
+      Fluid.ctx.dnt = dntVal && (dntVal.startsWith('1') || dntVal.startsWith('yes') || dntVal.startsWith('on'));
+    }
+  </script>
+  <script  src="/js/utils.js" ></script>
+  <script  src="/js/color-schema.js" ></script>
+  
+
+
+  
+<meta name="generator" content="Hexo 7.1.1"></head>
+
+
+<body>
+  
+
+  <header>
+    
+
+<div class="header-inner" style="height: 60vh;">
+  <nav id="navbar" class="navbar fixed-top  navbar-expand-lg navbar-dark scrolling-navbar">
+  <div class="container">
+    <a class="navbar-brand" href="/">
+      <strong>jw&#39;s blog</strong>
+    </a>
+
+    <button id="navbar-toggler-btn" class="navbar-toggler" type="button" data-toggle="collapse"
+            data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+      <div class="animated-icon"><span></span><span></span><span></span></div>
+    </button>
+
+    <!-- Collapsible content -->
+    <div class="collapse navbar-collapse" id="navbarSupportedContent">
+      <ul class="navbar-nav ml-auto text-center">
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/" target="_self">
+                <i class="iconfont icon-home-fill"></i>
+                <span>首页</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/categories/" target="_self">
+                <i class="iconfont icon-category-fill"></i>
+                <span>分类</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/tags/" target="_self">
+                <i class="iconfont icon-tags-fill"></i>
+                <span>标签</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/archives/" target="_self">
+                <i class="iconfont icon-archive-fill"></i>
+                <span>归档</span>
+              </a>
+            </li>
+          
+        
+          
+          
+          
+          
+            <li class="nav-item">
+              <a class="nav-link" href="/about/" target="_self">
+                <i class="iconfont icon-user-fill"></i>
+                <span>关于</span>
+              </a>
+            </li>
+          
+        
+        
+          <li class="nav-item" id="search-btn">
+            <a class="nav-link" target="_self" href="javascript:;" data-toggle="modal" data-target="#modalSearch" aria-label="Search">
+              <i class="iconfont icon-search"></i>
+            </a>
+          </li>
+          
+        
+        
+          <li class="nav-item" id="color-toggle-btn">
+            <a class="nav-link" target="_self" href="javascript:;" aria-label="Color Toggle">
+              <i class="iconfont icon-dark" id="color-toggle-icon"></i>
+            </a>
+          </li>
+        
+      </ul>
+    </div>
+  </div>
+</nav>
+
+  
+
+<div id="banner" class="banner" parallax=true
+     style="background: url('/img/banner/code.jpg') no-repeat center center; background-size: cover;">
+  <div class="full-bg-img">
+    <div class="mask flex-center" style="background-color: rgba(0, 0, 0, 0.4)">
+      <div class="banner-text text-center fade-in-up">
+        <div class="h2">
+          
+            <span id="subtitle" data-typed-text="S32DS集成MCAL"></span>
+          
+        </div>
+
+        
+          
+  <div class="mt-3">
+    
+    
+      <span class="post-meta">
+        <i class="iconfont icon-date-fill" aria-hidden="true"></i>
+        <time datetime="2024-09-30 15:27" pubdate>
+          2024年9月30日 下午
+        </time>
+      </span>
+    
+  </div>
+
+  <div class="mt-1">
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-chart"></i>
+        
+          1.4k 字
+        
+      </span>
+    
+
+    
+      <span class="post-meta mr-2">
+        <i class="iconfont icon-clock-fill"></i>
+        
+        
+        
+          12 分钟
+        
+      </span>
+    
+
+    
+    
+      
+        <span id="busuanzi_container_page_pv" style="display: none">
+          <i class="iconfont icon-eye" aria-hidden="true"></i>
+          <span id="busuanzi_value_page_pv"></span> 次
+        </span>
+        
+      
+    
+  </div>
+
+
+        
+      </div>
+
+      
+    </div>
+  </div>
+</div>
+
+</div>
+
+  </header>
+
+  <main>
+    
+      
+
+<div class="container-fluid nopadding-x">
+  <div class="row nomargin-x">
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+
+    </div>
+
+    <div class="col-lg-8 nopadding-x-md">
+      <div class="container nopadding-x-md" id="board-ctn">
+        <div id="board">
+          <article class="post-content mx-auto">
+            <h1 id="seo-header">S32DS集成MCAL</h1>
+            
+            
+              <div class="markdown-body">
+                
+                <blockquote>
+<p>简介：MCU 为 NXP-S32K344；RTD MCAL 版本为 <code>SW32K3_RTD_R21-11_4.0.0_HF_02</code> ；S32DS 3.5；EB Tresos 29.0</p>
+</blockquote>
+<h2 id="1-安装-MCAL"><a href="#1-安装-MCAL" class="headerlink" title="1 安装 MCAL"></a>1 安装 MCAL</h2><p>下载此版本的 RTD：<code>S32K3_S32M27x Real-Time Drivers AUTOSAR R21-11 Version 4.0.0 HF02</code></p>
+<p><img src="/posts/f2c01706/4155c4d63fbc44a1ae44fb0a34f2e5c7_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>下载并安装此版本的 MCAL：</p>
+<p><img src="/posts/f2c01706/556b712927fb214779e0a7dc24fba1c5_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>这里，我的安装后的 MCAL 的路径如下：</p>
+<p><img src="/posts/f2c01706/bd995acaed19722bd0a14013bc91b6ab_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h3 id="1-1-MCAL-的配置"><a href="#1-1-MCAL-的配置" class="headerlink" title="1.1 MCAL 的配置"></a>1.1 MCAL 的配置</h3><p>复制 MCAL 路径下的<em>所有模块</em>到一个<em>临时文件夹</em>中进行下一步处理，我这里就是复制 <code>D:\NXP\exe\SW32K3_RTD_R21-11_4.0.0_HF_02\eclipse\plugins</code> 下的所有<strong>文件夹</strong>到一个临时文件夹 <code>plugins_handle</code> 中：</p>
+<p><img src="/posts/f2c01706/99ed706fdea36147ede5f17e9bf22459_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>对各模块的文件夹进行重命名，更好看些，使用如下 python 脚本进行重命名：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> os<br><br><span class="hljs-comment"># 获取当前路径</span><br>current_path = os.getcwd()<br><br><span class="hljs-comment"># 遍历一级文件夹</span><br><span class="hljs-keyword">for</span> folder <span class="hljs-keyword">in</span> os.listdir(current_path):<br>    <span class="hljs-keyword">if</span> os.path.isdir(folder):<br>        <span class="hljs-comment"># 获取新名称，即第一个下划线之前的内容</span><br>        first_part = folder.split(<span class="hljs-string">&#x27;_&#x27;</span>)[<span class="hljs-number">0</span>]<br>        <br>        <span class="hljs-comment"># 检查是否需要处理</span><br>        <span class="hljs-keyword">if</span> first_part != <span class="hljs-string">&quot;Mem&quot;</span>:<br>            new_name = first_part<br>            <br>            <span class="hljs-comment"># 检查新名称是否已存在</span><br>            <span class="hljs-keyword">if</span> <span class="hljs-keyword">not</span> os.path.exists(new_name):<br>                os.rename(folder, new_name)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;文件夹名称已更新。&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>使用方法：在临时文件夹（D:\NXP\exe\plugins_handle）中新建并复制上面👆代码到 <code>rename.py</code> 中，然后运行</p>
+</blockquote>
+<p><img src="/posts/f2c01706/e2d1a0515f300b839b46be4e7bf066be_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>上面这三个文件夹需要手动重命名为如下（脚本已自动忽略处理这三个文件夹）：</p>
+<p><img src="/posts/f2c01706/b46beae0efcfc3a0c8a55c41c0545fcb_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>接下来，删除每个模块文件夹中除了 src 和 include 之外的所有文件，其中 BaseNXP、Platform 这两个模块需要手动处理，使用如下脚本进行删除：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> os<br><span class="hljs-keyword">import</span> shutil<br><br><span class="hljs-keyword">def</span> <span class="hljs-title function_">clean_directories</span>(<span class="hljs-params">base_path</span>):<br>    <span class="hljs-comment"># 列出当前路径下的一级文件夹</span><br>    <span class="hljs-keyword">for</span> folder <span class="hljs-keyword">in</span> os.listdir(base_path):<br>        folder_path = os.path.join(base_path, folder)<br><br>        <span class="hljs-comment"># 只处理文件夹，且不处理“BaseNXP.Base”和“Platform”</span><br>        <span class="hljs-keyword">if</span> os.path.isdir(folder_path) <span class="hljs-keyword">and</span> folder <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;BaseNXP&quot;</span>, <span class="hljs-string">&quot;Platform&quot;</span>, <span class="hljs-string">&quot;Base&quot;</span>]:<br>            <span class="hljs-comment"># 遍历文件夹中的内容</span><br>            <span class="hljs-keyword">for</span> item <span class="hljs-keyword">in</span> os.listdir(folder_path):<br>                item_path = os.path.join(folder_path, item)<br><br>                <span class="hljs-comment"># 检查是否是文件夹，且不是“src”或“include”</span><br>                <span class="hljs-keyword">if</span> os.path.isdir(item_path) <span class="hljs-keyword">and</span> item <span class="hljs-keyword">not</span> <span class="hljs-keyword">in</span> [<span class="hljs-string">&quot;src&quot;</span>, <span class="hljs-string">&quot;include&quot;</span>]:<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;删除文件夹: <span class="hljs-subst">&#123;item_path&#125;</span>&quot;</span>)<br>                    shutil.rmtree(item_path)  <span class="hljs-comment"># 删除文件夹</span><br><br>                <span class="hljs-comment"># 检查是否是文件</span><br>                <span class="hljs-keyword">elif</span> os.path.isfile(item_path):<br>                    <span class="hljs-built_in">print</span>(<span class="hljs-string">f&quot;删除文件: <span class="hljs-subst">&#123;item_path&#125;</span>&quot;</span>)<br>                    os.remove(item_path)  <span class="hljs-comment"># 删除文件</span><br><br><span class="hljs-keyword">if</span> __name__ == <span class="hljs-string">&quot;__main__&quot;</span>:<br>    current_path = os.getcwd()  <span class="hljs-comment"># 获取当前路径</span><br>    clean_directories(current_path)<br></code></pre></td></tr></table></figure>
+
+<p>脚本已忽略处理 BaseNXP、Platform 模块，需要手动修改：</p>
+<p>BaseNXP 保留如下三个文件夹：</p>
+<p><img src="/posts/f2c01706/39692b62b1d6014ea21b55133a458b6c_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>Platform 保留如下：</p>
+<p><img src="/posts/f2c01706/8f0e11256e196310b89e5946fce79133_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<blockquote>
+<p>进一步，其中 Platform&#x2F;build_files 下仅保留 gcc；Platform&#x2F;startup&#x2F;src&#x2F;m7 下仅保留 gcc、exceptions.c、startup.c</p>
+</blockquote>
+<p>然后，导出各模块的 include 路径，使用如下脚本：</p>
+<figure class="highlight py"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><code class="hljs py"><span class="hljs-keyword">import</span> os<br><br><span class="hljs-comment"># 示例路径，保留&quot;&quot;</span><br>template_path = <span class="hljs-string">&#x27;&quot;$&#123;workspace_loc:/$&#123;ProjName&#125;/MCAL/DIR/include&#125;&quot;&#x27;</span><br><br><span class="hljs-comment"># 当前路径</span><br>current_path = os.getcwd()<br><br><span class="hljs-comment"># 创建一个列表来存储所有路径</span><br>paths = []<br><br><span class="hljs-comment"># 遍历当前路径下的一级文件夹</span><br><span class="hljs-keyword">for</span> folder <span class="hljs-keyword">in</span> os.listdir(current_path):<br>    folder_path = os.path.join(current_path, folder)<br>    <span class="hljs-comment"># 检查是否为文件夹</span><br>    <span class="hljs-keyword">if</span> os.path.isdir(folder_path):<br>        <span class="hljs-comment"># 检查是否存在 &#x27;include&#x27; 文件夹</span><br>        include_folder = os.path.join(folder_path, <span class="hljs-string">&#x27;include&#x27;</span>)<br>        <span class="hljs-keyword">if</span> os.path.exists(include_folder):<br>            <span class="hljs-comment"># 将 DIR 替换为当前文件夹名称，且保留&quot;&quot;</span><br>            new_path = template_path.replace(<span class="hljs-string">&#x27;DIR&#x27;</span>, folder)<br>            <span class="hljs-comment"># 添加到路径列表</span><br>            paths.append(new_path)<br><br><span class="hljs-comment"># 在列表开头插入三个新路径</span><br>paths.insert(<span class="hljs-number">0</span>, <span class="hljs-string">&#x27;&quot;$&#123;ProjDirPath&#125;/include&quot;&#x27;</span>)<br>paths.insert(<span class="hljs-number">0</span>, <span class="hljs-string">&#x27;&quot;$&#123;workspace_loc:/$&#123;ProjName&#125;/MCAL/Platform/startup/include&#125;&quot;&#x27;</span>)<br>paths.insert(<span class="hljs-number">0</span>, <span class="hljs-string">&#x27;&quot;$&#123;workspace_loc:/$&#123;ProjName&#125;/MCAL/BaseNXP/header&#125;&quot;&#x27;</span>)<br>paths.insert(<span class="hljs-number">0</span>, <span class="hljs-string">&#x27;&quot;$&#123;workspace_loc:/$&#123;ProjName&#125;/generate/include&#125;&quot;&#x27;</span>)<br><br><span class="hljs-comment"># 打开 path.txt 文件用于写入</span><br><span class="hljs-keyword">with</span> <span class="hljs-built_in">open</span>(os.path.join(current_path, <span class="hljs-string">&#x27;path.txt&#x27;</span>), <span class="hljs-string">&#x27;w&#x27;</span>) <span class="hljs-keyword">as</span> output_file:<br>    <span class="hljs-comment"># 写入所有路径到 path.txt</span><br>    <span class="hljs-keyword">for</span> path <span class="hljs-keyword">in</span> paths:<br>        output_file.write(path + <span class="hljs-string">&#x27;\n&#x27;</span>)<br><br><span class="hljs-built_in">print</span>(<span class="hljs-string">&quot;路径已写入到 path.txt 文件。&quot;</span>)<br></code></pre></td></tr></table></figure>
+
+<blockquote>
+<p>此脚本会在当前运行路径下生成 path.txt 存放各模块的 include 路径</p>
+</blockquote>
+<h2 id="2-S32DS-Project"><a href="#2-S32DS-Project" class="headerlink" title="2 S32DS Project"></a>2 S32DS Project</h2><h3 id="2-1-新建-Project"><a href="#2-1-新建-Project" class="headerlink" title="2.1 新建 Project"></a>2.1 新建 Project</h3><p>新建一个空项目：</p>
+<p><img src="/posts/f2c01706/85fd1f90e5a73f9636adb37efd36d5ef_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/posts/f2c01706/0ba7ac5909654472258ec19c52927d25_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/posts/f2c01706/7a3ea107f0a98222751976c76f42dc48_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>删除项目中的这三个文件夹：</p>
+<p><img src="/posts/f2c01706/3232a9cea904dfb8f8db64c2d53f9028_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>新建这三个文件夹：</p>
+<p><img src="/posts/f2c01706/b0105a880529ebe81d098669d36036c1_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<blockquote>
+<p>其中，MCAL 用来存放 MCAL 各模块驱动的源码；generate 用来存放 EB_Tresos 工具生成的代码；Tresos_Project 是 EB 项目的路径</p>
+</blockquote>
+<p>将这三个文件夹添加到编译路径里：</p>
+<p><img src="/posts/f2c01706/87b67841a86f354cebfef69122db5ae4_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>复制临时文件夹中所有模块的源码到 S32DS 项目的 MCAL 文件夹中：</p>
+<p><img src="/posts/f2c01706/29a2cafd2ad5e161e46e260a5179032a_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h3 id="2-2-配置-Project"><a href="#2-2-配置-Project" class="headerlink" title="2.2 配置 Project"></a>2.2 配置 Project</h3><p>右键项目选择 Properties：</p>
+<p><img src="/posts/f2c01706/4636104653d97a00e58d02bc5133d149_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>添加如下定义：</p>
+<p><img src="/posts/f2c01706/5c6d87192e721d12df16dcf667d9dc24_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<figure class="highlight txt"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><code class="hljs txt">S32K3XX<br>AUTOSAR_OS_NOT_USE<br>S32K344<br>GCC<br>USE_SW_VECTOR_MODE<br>D_CACHE_ENABLE<br>I_CACHE_ENABLE<br>ENABLE_FPU<br></code></pre></td></tr></table></figure>
+
+<p>添加头文件，将临时文件夹下 path.txt 中的所有内容复制到此处：</p>
+<p><img src="/posts/f2c01706/a550ed853da91e9d6ba6d10e92f08195_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>选择优化选项：</p>
+<p><img src="/posts/f2c01706/df1004391b20d0dd0ba5f86819474466_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><code>-fno-short-enums -funsigned-char -fomit-frame-pointer -fstack-usage</code></p>
+<p>配置链接器：</p>
+<p><img src="/posts/f2c01706/605b1abf62a5a1d19ee3518229540bd9_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><code>&quot;$&#123;workspace_loc:/$&#123;ProjName&#125;/MCAL/Platform/build_files/gcc/linker_flash_s32k344.ld&#125;&quot;</code></p>
+<h2 id="3-EB-Tresos-Project"><a href="#3-EB-Tresos-Project" class="headerlink" title="3 EB-Tresos Project"></a>3 EB-Tresos Project</h2><p>选择新建项目：</p>
+<p><img src="/posts/f2c01706/491a7794751838ebf8e7e059ccd2b8f2_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/posts/f2c01706/2a7b53106d6f50ad85879e59b8094e6e_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/posts/f2c01706/88c9a84e08c1f09eaec15d5bdaab8ef3_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>以官方 Dio 点灯为例，添加如下模块（具体项目中使用到了哪些模块就添加哪些模块）<br>参考官方示例代码，在已安装的 MCAL 路径下: <code>SW32K3_RTD_R21-11_4.0.0_HF_02\eclipse\plugins\Dio_TS_T40D34M40I0R0\examples\EBT\S32K3XX\Dio_Example_S32K344\TresosProject\Dio_Example_S32K344</code></p>
+<p><img src="/posts/f2c01706/15a69ffd7b1ed7c9d2383e44e2d1bf61_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>复制 <code>SW32K3_RTD_R21-11_4.0.0_HF_02\eclipse\plugins\Dio_TS_T40D34M40I0R0\examples\EBT\S32K3XX\Dio_Example_S32K344\TresosProject\Dio_Example_S32K344</code> 路径下 config 文件夹下的所有文件到 S32DS 项目 Tresos_Project 下的 config 中（覆盖原文件）</p>
+<p>然后在 EB 中生成代码：</p>
+<p><img src="/posts/f2c01706/16333f2b8d669a8b7f798f9ec8ead34f_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>此时，刷新 S32DS 后 generate 下就有生成的代码了：</p>
+<p><img src="/posts/f2c01706/c4b6688882afeda620e3b9aa1d617b9a_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h2 id="4-编译"><a href="#4-编译" class="headerlink" title="4 编译"></a>4 编译</h2><p>复制 Dio 示例代码 <code>D:\NXP\exe\SW32K3_RTD_R21-11_4.0.0_HF_02\eclipse\plugins\Dio_TS_T40D34M40I0R0\examples\EBT\S32K3XX\Dio_Example_S32K344\src</code> 下的 main.c 替换 S32DS 项目下 src 中的 mian.c ；<br>并且注释掉 <code>#include &quot;check_example.h&quot;</code>、<code>Exit_Example(TRUE);</code></p>
+<p><img src="/posts/f2c01706/3a907d3bf486b795032c937036e248e3_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/posts/f2c01706/f1af8bdd5b158de26f2ec4216641dd09_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>先将 S32DS 项目下 MCAL 中的所有模块移除编译路径：</p>
+<p><img src="/posts/f2c01706/99dd74ca2831cc07b9196a1828b51812_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>根据 Dio 官方示例添加所需的模块到编译路径：</p>
+<p><img src="/posts/f2c01706/15a69ffd7b1ed7c9d2383e44e2d1bf61_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p><img src="/posts/f2c01706/ce8419e389353a0f21bcf9b4166f2dec_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>接下来，就是编译处理报错：</p>
+<p><img src="/posts/f2c01706/53876be4657bbf83688faa00a681ccab_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>此处报错说找不到这个 <code>SchM_Enter_Dio_DIO_EXCLUSIVE_AREA_01</code></p>
+<p>为了方便搜索，用 VSCode 打开这个 S32DS 项目：</p>
+<p><img src="/posts/f2c01706/406ea2deef38c6b05d20b6b32972ee3f_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>在 VSCode 中搜索 <code>SchM_Enter_Dio_DIO_EXCLUSIVE_AREA_01</code>：</p>
+<p><img src="/posts/f2c01706/bf985a4025126251509133e15280c70e_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>可以看到，<code>MCAL\Dio\src\Siul2_Dio_Ip.c</code> 调用了 <code>SchM_Enter_Dio_DIO_EXCLUSIVE_AREA_01</code> 函数，其函数的定义是在 MCAL 的 Rte 模块中。那么就添加 MCAL&#x2F;Rte 到编译路径中：</p>
+<p><img src="/posts/f2c01706/8c34ca8429429e7259bee73ee5d19fc2_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>再次编译：</p>
+<p><img src="/posts/f2c01706/3a55d3dfb95fa05fb10f53db3cca6bbd_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>显然，需要添加 MCAL&#x2F;Det 模块到编译路径中：</p>
+<p><img src="/posts/f2c01706/078e0c3678b8e1452593326966d0ca07_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>再次编译，没有错误了：</p>
+<p><img src="/posts/f2c01706/a07081cb66de3d14da6f133dbdfb2baf_MD5.jpeg" srcset="/img/loading.gif" lazyload></p>
+<p>烧录测试后，LED 正常闪烁！</p>
+
+                
+              </div>
+            
+            <hr/>
+            <div>
+              <div class="post-metas my-3">
+  
+    <div class="post-meta mr-3 d-flex align-items-center">
+      <i class="iconfont icon-category"></i>
+      
+
+<span class="category-chains">
+  
+  
+    
+      <span class="category-chain">
+        
+  <a href="/categories/MCU/" class="category-chain-item">MCU</a>
+  
+  
+
+      </span>
+    
+  
+</span>
+
+    </div>
+  
+  
+    <div class="post-meta">
+      <i class="iconfont icon-tags"></i>
+      
+        <a href="/tags/S32DS/" class="print-no-link">#S32DS</a>
+      
+        <a href="/tags/EB-Tresos/" class="print-no-link">#EB_Tresos</a>
+      
+        <a href="/tags/MCAL/" class="print-no-link">#MCAL</a>
+      
+        <a href="/tags/Autosar/" class="print-no-link">#Autosar</a>
+      
+        <a href="/tags/S32K344/" class="print-no-link">#S32K344</a>
+      
+    </div>
+  
+</div>
+
+
+              
+  
+
+  <div class="license-box my-3">
+    <div class="license-title">
+      <div>S32DS集成MCAL</div>
+      <div>https://jwlee36963.github.io/posts/f2c01706/</div>
+    </div>
+    <div class="license-meta">
+      
+        <div class="license-meta-item">
+          <div>作者</div>
+          <div>jw</div>
+        </div>
+      
+      
+        <div class="license-meta-item license-meta-date">
+          <div>发布于</div>
+          <div>2024年9月30日</div>
+        </div>
+      
+      
+      
+        <div class="license-meta-item">
+          <div>许可协议</div>
+          <div>
+            
+              
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="BY - 署名">
+                    <i class="iconfont icon-by"></i>
+                  </span>
+                </a>
+              
+                <a class="print-no-link" target="_blank" href="https://creativecommons.org/licenses/by-sa/4.0/">
+                  <span class="hint--top hint--rounded" aria-label="SA - 相同方式共享">
+                    <i class="iconfont icon-sa"></i>
+                  </span>
+                </a>
+              
+            
+          </div>
+        </div>
+      
+    </div>
+    <div class="license-icon iconfont"></div>
+  </div>
+
+
+
+              
+                <div class="post-prevnext my-3">
+                  <article class="post-prev col-6">
+                    
+                    
+                  </article>
+                  <article class="post-next col-6">
+                    
+                    
+                      <a href="/posts/bcdde5bf/" title="树莓派5-LED-Platform驱动">
+                        <span class="hidden-mobile">树莓派5-LED-Platform驱动</span>
+                        <span class="visible-mobile">下一篇</span>
+                        <i class="iconfont icon-arrowright"></i>
+                      </a>
+                    
+                  </article>
+                </div>
+              
+            </div>
+
+            
+  
+  
+    <article id="comments" lazyload>
+      
+  <script type="text/javascript">
+    Fluid.utils.loadComments('#comments', function() {
+      var light = 'github-light';
+      var dark = 'github-dark';
+      var schema = document.documentElement.getAttribute('data-user-color-scheme');
+      if (schema === 'dark') {
+        schema = dark;
+      } else {
+        schema = light;
+      }
+      window.UtterancesThemeLight = light;
+      window.UtterancesThemeDark = dark;
+      var s = document.createElement('script');
+      s.setAttribute('src', 'https://utteranc.es/client.js');
+      s.setAttribute('repo', 'jwlee36963/commit-utterance');
+      s.setAttribute('issue-term', 'pathname');
+      
+      s.setAttribute('label', 'utterances');
+      
+      s.setAttribute('theme', schema);
+      s.setAttribute('crossorigin', 'anonymous');
+      document.getElementById('comments').appendChild(s);
+    })
+  </script>
+  <noscript>Please enable JavaScript to view the comments</noscript>
+
+
+    </article>
+  
+
+
+          </article>
+        </div>
+      </div>
+    </div>
+
+    <div class="side-col d-none d-lg-block col-lg-2">
+      
+  <aside class="sidebar" style="margin-left: -1rem">
+    <div id="toc">
+  <p class="toc-header">
+    <i class="iconfont icon-list"></i>
+    <span>目录</span>
+  </p>
+  <div class="toc-body" id="toc-body"></div>
+</div>
+
+
+
+  </aside>
+
+
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+  
+
+
+
+
+
+
+
+    
+
+    
+      <a id="scroll-top-button" aria-label="TOP" href="#" role="button">
+        <i class="iconfont icon-arrowup" aria-hidden="true"></i>
+      </a>
+    
+
+    
+      <div class="modal fade" id="modalSearch" tabindex="-1" role="dialog" aria-labelledby="ModalLabel"
+     aria-hidden="true">
+  <div class="modal-dialog modal-dialog-scrollable modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header text-center">
+        <h4 class="modal-title w-100 font-weight-bold">搜索</h4>
+        <button type="button" id="local-search-close" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body mx-3">
+        <div class="md-form mb-5">
+          <input type="text" id="local-search-input" class="form-control validate">
+          <label data-error="x" data-success="v" for="local-search-input">关键词</label>
+        </div>
+        <div class="list-group" id="local-search-result"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+    
+
+    
+  </main>
+
+  <footer>
+    <div class="footer-inner">
+  
+    <div class="footer-content">
+       <a href="https://hexo.io" target="_blank" rel="nofollow noopener"><span>Hexo</span></a> <i class="iconfont icon-love"></i> <a href="https://github.com/fluid-dev/hexo-theme-fluid" target="_blank" rel="nofollow noopener"><span>Fluid</span></a> 
+    </div>
+  
+  
+  
+  
+</div>
+
+  </footer>
+
+  <!-- Scripts -->
+  
+  <script  src="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.js" ></script>
+  <link  rel="stylesheet" href="https://lib.baomitu.com/nprogress/0.2.0/nprogress.min.css" />
+
+  <script>
+    NProgress.configure({"showSpinner":false,"trickleSpeed":100})
+    NProgress.start()
+    window.addEventListener('load', function() {
+      NProgress.done();
+    })
+  </script>
+
+
+<script  src="https://lib.baomitu.com/jquery/3.6.4/jquery.min.js" ></script>
+<script  src="https://lib.baomitu.com/twitter-bootstrap/4.6.1/js/bootstrap.min.js" ></script>
+<script  src="/js/events.js" ></script>
+<script  src="/js/plugins.js" ></script>
+
+
+  <script  src="https://lib.baomitu.com/typed.js/2.0.12/typed.min.js" ></script>
+  <script>
+    (function (window, document) {
+      var typing = Fluid.plugins.typing;
+      var subtitle = document.getElementById('subtitle');
+      if (!subtitle || !typing) {
+        return;
+      }
+      var text = subtitle.getAttribute('data-typed-text');
+      
+        typing(text);
+      
+    })(window, document);
+  </script>
+
+
+
+
+  
+    <script  src="/js/img-lazyload.js" ></script>
+  
+
+
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/tocbot/4.20.1/tocbot.min.js', function() {
+    var toc = jQuery('#toc');
+    if (toc.length === 0 || !window.tocbot) { return; }
+    var boardCtn = jQuery('#board-ctn');
+    var boardTop = boardCtn.offset().top;
+
+    window.tocbot.init(Object.assign({
+      tocSelector     : '#toc-body',
+      contentSelector : '.markdown-body',
+      linkClass       : 'tocbot-link',
+      activeLinkClass : 'tocbot-active-link',
+      listClass       : 'tocbot-list',
+      isCollapsedClass: 'tocbot-is-collapsed',
+      collapsibleClass: 'tocbot-is-collapsible',
+      scrollSmooth    : true,
+      includeTitleTags: true,
+      headingsOffset  : -boardTop,
+    }, CONFIG.toc));
+    if (toc.find('.toc-list-item').length > 0) {
+      toc.css('visibility', 'visible');
+    }
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('tocbot' in window) {
+        tocbot.refresh();
+        var toc = jQuery('#toc');
+        if (toc.length === 0 || !tocbot) {
+          return;
+        }
+        if (toc.find('.toc-list-item').length > 0) {
+          toc.css('visibility', 'visible');
+        }
+      }
+    });
+  });
+</script>
+
+
+  <script src=https://lib.baomitu.com/clipboard.js/2.0.11/clipboard.min.js></script>
+
+  <script>Fluid.plugins.codeWidget();</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/anchor-js/4.3.1/anchor.min.js', function() {
+    window.anchors.options = {
+      placement: CONFIG.anchorjs.placement,
+      visible  : CONFIG.anchorjs.visible
+    };
+    if (CONFIG.anchorjs.icon) {
+      window.anchors.options.icon = CONFIG.anchorjs.icon;
+    }
+    var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+    var res = [];
+    for (var item of el) {
+      res.push('.markdown-body > ' + item.trim());
+    }
+    if (CONFIG.anchorjs.placement === 'left') {
+      window.anchors.options.class = 'anchorjs-link-left';
+    }
+    window.anchors.add(res.join(', '));
+
+    Fluid.events.registerRefreshCallback(function() {
+      if ('anchors' in window) {
+        anchors.removeAll();
+        var el = (CONFIG.anchorjs.element || 'h1,h2,h3,h4,h5,h6').split(',');
+        var res = [];
+        for (var item of el) {
+          res.push('.markdown-body > ' + item.trim());
+        }
+        if (CONFIG.anchorjs.placement === 'left') {
+          anchors.options.class = 'anchorjs-link-left';
+        }
+        anchors.add(res.join(', '));
+      }
+    });
+  });
+</script>
+
+
+  
+<script>
+  Fluid.utils.createScript('https://lib.baomitu.com/fancybox/3.5.7/jquery.fancybox.min.js', function() {
+    Fluid.plugins.fancyBox();
+  });
+</script>
+
+
+  <script>Fluid.plugins.imageCaption();</script>
+
+  <script  src="/js/local-search.js" ></script>
+
+  <script defer src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js" ></script>
+
+
+
+
+
+<!-- 主题的启动项，将它保持在最底部 -->
+<!-- the boot of the theme, keep it at the bottom -->
+<script  src="/js/boot.js" ></script>
+
+
+  
+
+  <noscript>
+    <div class="noscript-warning">博客在允许 JavaScript 运行的环境下浏览效果更佳</div>
+  </noscript>
+</body>
+</html>
